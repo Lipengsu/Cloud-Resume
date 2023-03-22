@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springb.mapper.UserMapper">
+
+    <resultMap id="userMap" type="com.example.springb.entity.User">
+        <result property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="fullname" column="fullname"/>
+        <result property="job" column="job"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="resume" column="resume"/>
+        <result property="links" column="links"/>
+        <result property="socialnetwork" column="socialnetwork"/>
+        <result property="role" column="role"/>
+        <collection property="experiencesList" javaType="ArrayList" ofType="com.example.springb.entity.Experiences">
+            <result column="e_id" property="id"/>
+            <result column="e_role" property="role"/>
+            <result column="e_company" property="company"/>
+            <result column="e_fromto" property="fromto"/>
+            <result column="e_isCurrentJob" property="isCurrentJob"/>
+            <result column="e_description" property="description"/>
+<!--            <collection property="tagsList" javaType="ArrayList" ofType="com.example.springb.entity.Tags">-->
+<!--                <result column="t_id" property="id"/>-->
+<!--                <result column="ex_id" property="experience_id"/>-->
+<!--                <result column="pr_id" property="project_id"/>-->
+<!--                <result column="ed_id" property="education_id"/>-->
+<!--                <result column="t_tag" property="tag"/>-->
+<!--            </collection>-->
+        </collection>
+        <collection property="projectsList" javaType="ArrayList" ofType="com.example.springb.entity.Projects">
+            <result column="p_id" property="id"/>
+            <result column="p_name" property="name"/>
+            <result column="p_link" property="link"/>
+            <result column="p_from" property="from"/>
+            <result column="p_to" property="to"/>
+            <result column="p_description" property="description"/>
+        </collection>
+        <collection property="educationsList" javaType="ArrayList" ofType="com.example.springb.entity.Educations">
+            <result column="d_id" property="id"/>
+            <result column="d_from" property="from"/>
+            <result column="d_to" property="to"/>
+            <result column="d_degree" property="degree"/>
+            <result column="d_school" property="school"/>
+            <result column="d_description" property="description"/>
+        </collection>
+    </resultMap>
+    <select id="selectbyid" resultMap="userMap">
+        SELECT `user`.*,
+               experiences.id as        e_id,
+               experiences.role         e_role,
+               experiences.company      e_company,
+               experiences.fromto       e_fromto,
+               experiences.isCurrentJob e_isCurrentJob,
+               experiences.description  e_description,
+--                projects.name            e_name,
+               projects.id              p_id,
+               projects.name            p_name,
+               projects.link            p_link,
+               projects.from            p_from,
+               projects.to              p_to,
+               projects.description     p_description,
+               educations.id            d_id,
+               educations.from          d_from,
+               educations.to            d_to,
+               educations.degree        d_degree,
+--                educations.school        d_degree,
+               educations.school        d_school,
+               educations.description   d_description
+--                tags.id                  e_id,
+--                tags.experience_id       ex_id,
+--                tags.project_id          pr_id,
+--                tags.education_id        ed_id
+        from `user`
+                 left join experiences on user.id = experiences.user_id
+                 left join projects on user.id = projects.user_id
+                 left join educations on user.id = educations.user_id
+--                  left join tags on experiences.id = tags.experience_id
+--                  left join tags on peojects.id = tags.projects_id
+--                  left join tags on educations.id = tags.educations_id
+        where `user`.id = #{id}
+    </select>
+</mapper>
